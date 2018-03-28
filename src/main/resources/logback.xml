@@ -4,7 +4,7 @@
 
 
     <!-- 日志输出格式 -->
-    <property name="logPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5level %optinfo %msg%n" />
+    <property name="logPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5level  %msg%n" />
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -14,9 +14,9 @@
 
     <!-- 生产环境配置 -->
     <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.home}/logs/chinapostwxyx.log</file>
+        <file>${catalina.home}/logs/ymly.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/hnyz.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${catalina.home}/logs/ymly.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>${logPattern}</pattern>
@@ -24,7 +24,7 @@
     </appender>
 
     <!-- project default level -->
-    <logger name="com.dg11185.hnyz" level="INFO"/>
+    <logger name="com.dg11185.ymly" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="console"/>
