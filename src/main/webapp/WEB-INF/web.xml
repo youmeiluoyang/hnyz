@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+  <!-- 不同环境的资源文件路径 -->
+  <context-param>
+    <param-name>env.default</param-name>
+    <!-- 开发环境(dev)，测试环境(test)，生产环境(prod) -->
+    <param-value>test</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:applicationContext.xml,
+    </param-value>
+  </context-param>
+
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.dg11185.hnyz.common.listener.BasepathConfigListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.dg11185.hnyz.common.listener.CommonListener</listener-class>
+  </listener>
+
+  <listener>
+    <description>Servlet listener that exposes the request to the current thread</description>
+    <display-name>RequestContextListener</display-name>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+
+  <!-- 统一请求编码为UTF-8 -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <!--登陆Filter-->
+  <filter>
+    <filter-name>loginFilter</filter-name>
+    <filter-class>com.dg11185.hnyz.common.filter.LoginFilter</filter-class>
+    <init-param>
+      <!--这些登陆Url不过滤-->
+      <param-name>loginUrls</param-name>
+      <param-value>/system/login.do,/system/toLogin.do,/system/getPhoneCode.do,/system/makeCode.do</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>loginFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>
+
+
+
+  <!-- 将控制层请求转发逻辑交给Spring MVC处理 -->
+  <servlet>
+    <servlet-name>spring-mvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:springmvc-servlet.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>spring-mvc</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>/system/login.do</welcome-file>
+  </welcome-file-list>
+
+  <!-- 异常处理页面 -->
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/WEB-INF/views/common/500.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/views/common/500.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/views/common/404.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>400</error-code>
+    <location>/WEB-INF/views/common/400.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/WEB-INF/views/common/401.jsp</location>
+  </error-page>
+
+  <!-- session过期时间12小时 -->
+  <session-config>
+    <session-timeout>720</session-timeout>
+  </session-config>
+</web-app>

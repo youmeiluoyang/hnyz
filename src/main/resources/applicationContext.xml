@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+    xmlns:aop="http://www.springframework.org/schema/aop"  
+    xmlns:tx="http://www.springframework.org/schema/tx"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:task="http://www.springframework.org/schema/task" 
+    xsi:schemaLocation="   
+          http://www.springframework.org/schema/beans   
+          http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+          http://www.springframework.org/schema/tx   
+          http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+          http://www.springframework.org/schema/context   
+          http://www.springframework.org/schema/context/spring-context-4.2.xsd
+          http://www.springframework.org/schema/task
+          http://www.springframework.org/schema/task/spring-task-4.2.xsd
+          http://www.springframework.org/schema/aop   
+          http://www.springframework.org/schema/aop/spring-aop-4.2.xsd" default-autowire="byName" default-destroy-method="destroy">
+    <!-- 加载数据源配置文件 -->
+    <context:property-placeholder location="classpath:env/${env.default}/jdbc.properties"/>
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <!-- 设置JDBC驱动名称 -->
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <!-- 设置JDBC连接URL -->
+        <property name="url" value="${jdbc.url}" />
+        <!-- 设置数据库用户名 -->
+        <property name="username" value="${jdbc.username}" />
+        <!-- 设置数据库密码 -->
+        <property name="password" value="${jdbc.password}" />
+        <!-- 最大连接数量 -->
+        <property name="maxActive" value="120" />
+        <!-- 最小连接池数量 -->
+        <property name="minIdle" value="10" />
+        <!-- 初始化连接数 -->
+        <property name="initialSize" value="5" />
+        <!-- 自动提交 -->
+        <property name="defaultAutoCommit" value="true" />
+    </bean>
+     
+    <!-- 配置Jdbc模板 -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+     <!-- 配置事务管理器 -->
+     <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+     </bean> 
+
+	 <!-- 添加事务操作的过滤条件,有数据库操作service方法必须全部以下面的方法开头,没有数据库操作的不允许以下面的方法开头-->
+     <tx:advice id="tx" transaction-manager="txManager">
+     	<tx:attributes>
+            <!--事务要求,保证原子性-->
+     		<tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="set*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="batchInsert*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="batchUpdate*" propagation="REQUIRED" />
+			<tx:method name="modify*" propagation="REQUIRED" />
+            <tx:method name="invalidate*" propagation="REQUIRED" />
+            <tx:method name="import*" propagation="REQUIRED" />
+            <!--事务参与,保证线程可见性-->
+			<tx:method name="get*" propagation="SUPPORTS"/>
+			<tx:method name="load*" propagation="SUPPORTS"/>
+			<tx:method name="find*" propagation="SUPPORTS" />
+			<tx:method name="query*" propagation="SUPPORTS" />
+            <!--其他,同一线程不保证可见性!!!!!-->
+     	</tx:attributes>
+     </tx:advice>
+     
+     <!-- 声明式事务管理 -->
+     <aop:config expose-proxy="true">
+		<!-- service层加事务 -->
+		<aop:pointcut expression="execution(* com.dg11185.hnyz.service..*.*(..))" id="pt" />
+		<aop:advisor advice-ref="tx" pointcut-ref="pt" />
+	 </aop:config>
+	 
+	<tx:annotation-driven transaction-manager="txManager"/>
+
+	<context:annotation-config />
+    <!-- 自动扫描组件，需要把controller去掉，否则影响事务管理 -->
+    <context:component-scan base-package="com.dg11185.hnyz">
+     	<context:exclude-filter type="regex" expression="com.dg11185.hnyz.controller.*" />
+    </context:component-scan>
+
+    <!-- 开启spring@Scheduled注解 ，用于执行定时任务  -->
+    <task:annotation-driven scheduler="taskScheduler" mode="proxy"/>
+    <task:scheduler id="taskScheduler" pool-size="10"  />
+
+    <!-- 对@Aspect切面的bean创建代理 -->
+    <aop:aspectj-autoproxy/>
+
+    <!-- 系统Ehcache缓存配置 -->
+    <import resource="spring-ehCache.xml" />
+</beans>
