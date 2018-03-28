@@ -10,14 +10,17 @@ import com.dg11185.hnyz.common.config.ResourceConfig;
 
 public class WXConstant {
 
-    public final static String APP_ID = "";
-    public final static String SECRET = "";
+    public final static String SECRET = ResourceConfig.getAppConfig().getProperty("app.secret");
+    public final static String APP_ID = ResourceConfig.getAppConfig().getProperty("app.appId");
+
+    public final static String ACCESS_TOKEN = "";
 
     // 网页授权 请求预授权code
     public final static String OAUTH2_CODE = ResourceConfig.getWxApiConfig().getProperty("address.oauth2.authorize");
 
     // 网页授权 请求access_token（网页授权token）
-    public final static String OAUTH2_ACCESS_TOKEN = ResourceConfig.getWxApiConfig().getProperty("address.oauth2.component.accessToken");
+    public final static String OAUTH2_ACCESS_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token?";
+    //public final static String OAUTH2_ACCESS_TOKEN = ResourceConfig.getWxApiConfig().getProperty("address.oauth2.component.accessToken");
 
     // 网页授权 获取用户信息
     public final static String USER_INFO = ResourceConfig.getWxApiConfig().getProperty("address.userinfo");
