@@ -34,23 +34,20 @@ public class LoginFilter implements Filter{
         HttpSession session = request.getSession();
         Object user = session.getAttribute(SysConstant.LOGIN_ADMIN);
         String path = request.getServletPath();
-        System.out.println(path + "---" + (user == null));
-/*        if(user == null){
-            //如果是登陆地址,放行
-            if(loginSets.contains(path)){
+        if(user == null){
+            //如果是白名单地址,或者是API地址
+            if(loginSets.contains(path) || path.contains("api")){
                 filterChain.doFilter(servletRequest,servletResponse);
             }else{
                 //否则,跳转到登陆页
-                response.sendRedirect(request.getContextPath()+"/system/toLogin.do");
+                response.sendRedirect(request.getContextPath()+"/system/login.do");
             }
-        }else{
-            String isClick = request.getParameter("click");
-            if("true".equals(isClick)){
-                request.getSession().setAttribute("clickMenu",path);
-            }
+        }
+        //直接放行
+        else{
             filterChain.doFilter(servletRequest,servletResponse);
-        }*/
-        filterChain.doFilter(servletRequest,servletResponse);
+        }
+
     }
 
     @Override

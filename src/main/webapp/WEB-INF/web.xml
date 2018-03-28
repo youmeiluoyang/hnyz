@@ -60,7 +60,7 @@
     <init-param>
       <!--这些登陆Url不过滤-->
       <param-name>loginUrls</param-name>
-      <param-value>/system/login.do,/system/toLogin.do,/system/getPhoneCode.do,/system/makeCode.do</param-value>
+      <param-value>/wx/callback.do,/system/login.do,/system/toLogin.do</param-value>
     </init-param>
   </filter>
   <filter-mapping>
