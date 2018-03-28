@@ -193,8 +193,24 @@
     </dependency>
 
 
+    <!--xml和javaBean互转-->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.4.8</version>
+    </dependency>
 
-
+    <!--dom4j和依赖包-->
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1.1</version>
+    </dependency>
 
 
   </dependencies>
@@ -232,5 +248,6 @@
         </configuration>
       </plugin>
     </plugins>
+    <finalName>ymly</finalName>
   </build>
 </project>
