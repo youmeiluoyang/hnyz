@@ -17,6 +17,7 @@ public class WeixinServiceImpl implements WeixinService {
 
     //加解密类,只一个
     private static final WXBizMsgCrypt wxBizMsgCrypt;
+    private static final String appSecret;
 
     //静态初始化流程
     static {
@@ -24,6 +25,7 @@ public class WeixinServiceImpl implements WeixinService {
         String token = ResourceConfig.getAppConfig().getProperty("app.token");
         String encryptKey = ResourceConfig.getAppConfig().getProperty("app.encodingKey");
         String appId = ResourceConfig.getAppConfig().getProperty("app.appId");
+        appSecret = ResourceConfig.getAppConfig().getProperty("app.secret");
         wxBizMsgCrypt = new WXBizMsgCrypt(token, encryptKey, appId);
     }
 
