@@ -1,6 +1,7 @@
 package com.dg11185.hnyz.controller.member;
 
 import com.dg11185.hnyz.bean.Member.MemberIncreaseForm;
+import com.dg11185.hnyz.bean.common.PageRequest;
 import com.dg11185.hnyz.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,5 +34,17 @@ public class MemberController {
         List<MemberIncreaseForm> list = memberService.queryMemberIncrease();
         return list;
     }
+
+
+    /**
+     * 用户列表
+     */
+    @RequestMapping(value = "list.do")
+    public  String  list(HttpServletRequest request, HttpSession session, PageRequest pageRequest) {
+        memberService.queryMemberByPage();
+        return "member/list";
+    }
+
+
 
 }

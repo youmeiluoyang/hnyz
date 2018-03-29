@@ -29,14 +29,14 @@
     
     <!--左侧菜单menu/s -->
     <div class="menu">
-		<a href="${ctx}/index.do"><h1><img src="${ctx}/resources/images/avatar.png" alt="邮美洛阳">邮美洛阳</h1></a>
+		<a href=""><h1><img src="${ctx}/resources/images/avatar.png" alt="邮美洛阳">邮美洛阳</h1></a>
         <div class="category">
 			<div class="cate">
 				<c:forEach items="${menu}" var="mainMenu">
 					<div class="cate_hd"><i class="i_cate i_business"></i>${mainMenu.key}</div>
 					<div class="cate_bd">
-						<c:forEach items="${mainMenu.value}" var="subMenu">
-							<a href="${subMenu.url}" class="cate_item">${subMenu.names}</a>
+						<c:forEach items="${mainMenu.value}" var="subMenu" varStatus="status">
+							<a href="${ctx}/${subMenu.url}" class="cate_item" sort_num="${status.index}">${subMenu.names}</a>
 						</c:forEach>
 					</div>
 				</c:forEach>

@@ -1,5 +1,7 @@
 $(function(){
-    //左侧菜单
+
+
+    //主菜单点击
     $('.cate_hd').each(function(){
         $(this).click(function(){
             if(!$(this).parent().hasClass('current')){
@@ -15,12 +17,58 @@ $(function(){
         });
     });
 
+
+    //子菜单
     $('.cate_item').each(function(){
-        $(this).click(function(){
+        $(this).click(function(e){
             $('.cate_item').removeClass('on');
             $(this).addClass('on');
+            //阻止自动跳转
+            e.preventDefault();
+            var url = $(this).attr("href");
+            var sortNum= $(this).attr("sort_num");
+            if(url.indexOf("?") == -1){
+                url = url+"?sortNum=" + sortNum;
+            }else{
+                url = url+"&sortNum=" + sortNum;
+            }
+            window.location.href = url;
         });
     });
+
+
+
+    //判断菜单是否高亮
+    function testHighLight() {
+        var url =window.location.href.toString();
+        if(url.indexOf("sortNum") !=-1){
+            var sortNum = undefined;
+            var parameters = url.split("?")[1];
+            var parArr = parameters.split("&");
+            for(var i = 0;i<parArr.length;i++){
+                var par = parArr[i];
+                if(par.indexOf("sortNum") != 1){
+                    sortNum = par.split("=")[1];
+                    break;
+                }
+            }
+            $('.cate_item').each(function(){
+                var cur = $(this).attr("sort_num");
+                if(cur == sortNum){
+                    var par = $(this).parent().prev();
+                    //展开父菜单
+                    $('.cate').removeClass('current');
+                    par.parent().addClass('current');
+                    $('.cate_bd').slideUp();
+                    par.next().slideDown();
+                    $(this).addClass("on");
+                }
+            });
+        }
+    }
+    testHighLight();
+
+
 
     //字数限制
     $('.wzxq').each(function(i){

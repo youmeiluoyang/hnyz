@@ -1,6 +1,8 @@
 package com.dg11185.hnyz.service.member;
 
+import com.dg11185.hnyz.bean.Member.Member;
 import com.dg11185.hnyz.bean.Member.MemberIncreaseForm;
+import com.dg11185.hnyz.bean.common.PageWrap;
 
 import java.util.List;
 
@@ -18,5 +20,13 @@ public interface MemberService {
      * @return
      */
     List<MemberIncreaseForm> queryMemberIncrease();
+
+
+    /**
+     * 分页查询用户
+     *
+     * @return
+     */
+    PageWrap<Member> queryMemberByPage();
 
 }
