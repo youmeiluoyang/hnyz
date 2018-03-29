@@ -557,3 +557,8 @@ a:hover,a:visited{color: #f90;}
 table .sum {
     color: red;
 }
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
