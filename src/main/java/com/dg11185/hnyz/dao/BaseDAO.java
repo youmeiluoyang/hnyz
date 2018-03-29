@@ -3,6 +3,7 @@ package com.dg11185.hnyz.dao;
 
 import com.dg11185.hnyz.bean.common.PageRequest;
 import com.dg11185.hnyz.bean.common.PageWrap;
+import com.dg11185.hnyz.util.SQLUtil;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -22,6 +23,8 @@ import java.util.*;
  *
  */
 public abstract class BaseDAO extends JdbcDaoSupport {
+
+    public static final String TB_PREFIX = "tb_";
 
     @Resource
     public void setJb(JdbcTemplate jb) {
@@ -135,6 +138,21 @@ public abstract class BaseDAO extends JdbcDaoSupport {
     public <T> int saveOrUpdate(String sql, Collection<T> arg) {
         return this.getJdbcTemplate().update(sql, arg.toArray());
     }
+
+
+    /**
+     * 更新对象
+     * @param obj       待更新的实体对象
+     * @param keyColumn 更新对象的限定条件字段名称
+     * @return 返回被更新的记录数
+     */
+    public <T> int update(T obj, String keyColumn) {
+        String tableName = TB_PREFIX + obj.getClass().getSimpleName().toLowerCase();
+        // 自动生成对象的更新操作的SQL语句及其参数值
+        Object[] updateSql = SQLUtil.generateUpdate(obj, tableName, keyColumn, false);
+        return this.getJdbcTemplate().update(updateSql[0].toString(), (Object[]) updateSql[1]);
+    }
+
 
     /**
      * 更新

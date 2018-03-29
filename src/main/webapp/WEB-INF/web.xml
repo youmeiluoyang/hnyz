@@ -69,6 +69,15 @@
   </filter-mapping>
 
 
+  <filter>
+    <filter-name>sitemesh</filter-name>
+    <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
 
   <!-- 将控制层请求转发逻辑交给Spring MVC处理 -->
   <servlet>

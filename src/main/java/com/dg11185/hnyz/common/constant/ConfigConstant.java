@@ -3,7 +3,7 @@ package com.dg11185.hnyz.common.constant;
 import com.dg11185.hnyz.common.config.SysConfig;
 
 /**
- * Created by Administrator on 2017/3/15.
+ * 一些常用的配置
  */
 public class ConfigConstant {
 

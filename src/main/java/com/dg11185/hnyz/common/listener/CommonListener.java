@@ -4,7 +4,6 @@ package com.dg11185.hnyz.common.listener;
 import com.dg11185.hnyz.common.config.SysConfig;
 import com.dg11185.hnyz.util.LogUtil;
 import com.dg11185.util.concurrent.ThreadPoolUtil;
-import com.dg11185.util.queue.QueueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ public class CommonListener implements ServletContextListener{
         if(count > available/2){
             count = available/2;
         }
-        QueueHandler.startQueuedTask(count);
+        //QueueHandler.startQueuedTask(count);
     }
 
 
@@ -50,8 +49,8 @@ public class CommonListener implements ServletContextListener{
                 Driver driver = drivers.nextElement();
                 DriverManager.deregisterDriver(driver);
             }
-            log.info("停止队列任务....");
-            QueueHandler.stop();
+            //log.info("停止队列任务....");
+            //QueueHandler.stop();
             log.info("[destroyListener]关闭系统线程池...");
             ThreadPoolUtil.shutdownNow();
         }catch (Exception e){
