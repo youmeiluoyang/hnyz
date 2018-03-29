@@ -58,7 +58,13 @@ public class ApiController {
                 user.setOpenid(StringUtils.isBlank(testOpenid) ? "123456" : testOpenid);
                 session.setAttribute(SysConstant.WX_USER, user);
             }
-            rsp.initedData().put("isLogin", session.getAttribute(SysConstant.WX_USER) != null);
+            if (session.getAttribute(SysConstant.WX_USER) != null) {
+                rsp.initedData().put("isLogin", true);
+                rsp.initedData().put("user", session.getAttribute(SysConstant.WX_USER));
+            } else {
+                rsp.initedData().put("isLogin", false);
+            }
+
             return rsp;
         } catch (Exception e) {
             return new APIResponse(APIResponse.INNER_ERROR);
