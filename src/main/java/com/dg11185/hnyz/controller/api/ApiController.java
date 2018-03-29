@@ -115,6 +115,7 @@ public class ApiController {
                     + "&code=" + code
                     + "&grant_type=authorization_code";
             JSONObject atJson = JSONObject.parseObject(HttpClientUtils.getRequest(atUrl));
+            log.info("微信返回：{}", atJson);
             // 成功获取accessToken
             if (!atJson.containsKey("errcode")) {
                 User user = null;
@@ -131,9 +132,11 @@ public class ApiController {
                         newUser.setPrivilegess(uiJson.getString("privilege"));
                         // 插入或更新数据
                         userService.saveOrUpdateUser(newUser);
+                        user = newUser;
                     }
                     // 获得数据库中的数据
-                    user = userService.getUserByOpenid(atJson.getString("openid"));
+                    //user = userService.getUserByOpenid(atJson.getString("openid"));
+
 
                 } else {// 不需要获得完整用户信息，仅需获得openid
                     user = new User();
