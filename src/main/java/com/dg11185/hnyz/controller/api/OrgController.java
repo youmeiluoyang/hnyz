@@ -6,6 +6,7 @@ import com.dg11185.hnyz.service.api.OrgService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class OrgController {
     private OrgService orgService;
 
     @RequestMapping("/getOrg.do")
+    @ResponseBody
     public APIResponse getOrg(String orgNo) {
         List<Org> org = orgService.getOrg();
         APIResponse res = new APIResponse();
