@@ -15,7 +15,7 @@
         <th>卡号</th>
         <th>地址</th>
         <th>注册时间</th>
-        <th>积分</th>
+        <%--<th>积分</th>--%>
         <%--<th width="198">操作</th>--%>
     </tr>
     <c:forEach items="${wrap.list }" var="mem" varStatus="vsr">
@@ -29,7 +29,7 @@
             <td>${mem.cardNo}</td>
             <td>${mem.address}</td>
             <td>${mem.createDate}</td>
-            <td>${mem.score}</td>
+            <%--<td>${mem.score}</td>--%>
 <%--            <td>
                 <a class="fblue" href="${ctx}/admin/showAdmin.do?adminId=${admin.ids}">修改用户</a>
             </td>--%>
