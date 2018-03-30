@@ -9,6 +9,7 @@ import java.util.Date;
  * @date 6:55 PM  3/29/2018
  */
 public class Member implements Serializable{
+
     private String ids;
     private String openId;
     private String nickName;
