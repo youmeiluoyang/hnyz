@@ -6,7 +6,7 @@
 
 <table class="tb_result">
     <tr>
-        <th>openId</th>
+        <%--<th>openId</th>--%>
         <th>昵称</th>
         <th>头像</th>
         <th>手机号码</th>
@@ -19,9 +19,9 @@
     </tr>
     <c:forEach items="${wrap.list }" var="mem" varStatus="vsr">
         <tr>
-            <td>${mem.openId}</td>
+            <%--<td>${mem.openId}</td>--%>
             <td>${mem.nickName }</td>
-            <td>${mem.headImgUrl }</td>
+            <td><img style="width: 30px;height: 30px;" src="${mem.headImgUrl}"></td>
             <td>${mem.telephone }</td>
             <td>${mem.accountName}</td>
             <td>${mem.cardNo}</td>
