@@ -66,6 +66,7 @@ public class ApiController {
                     rsp.initedData().put("isLogin", true);
                     rsp.initedData().put("user", newMember);
                 }else {
+                    session.removeAttribute(SysConstant.WX_USER);
                     return new APIResponse(APIResponse.ERROR, "没有找到该用户", null);
                 }
             } else {
