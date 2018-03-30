@@ -1,5 +1,7 @@
 package com.dg11185.hnyz.bean.Member;
 
+import com.dg11185.dao.annotation.NotDbColumn;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,6 +23,7 @@ public class Member implements Serializable{
     private String orgNo;
     private int score;
     private Date createDate;
+    @NotDbColumn
     private String orgName;
 
 
