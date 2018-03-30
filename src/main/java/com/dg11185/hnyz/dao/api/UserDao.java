@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 public class UserDao extends BaseDAO  {
 
     public void saveOrUpdateUser(Member member) {
-        String sql = "select count(*) from tb_member where openId = ?";
-        if (queryForBean(sql, new Object[]{member.getOpenId()}, Integer.class) > 0) {
+        String sql = "select 1 from tb_member where openId = ?";
+        if (queryCount(sql, new Object[]{member.getOpenId()}) > 0) {
             String update = "update tb_member set nickname = ?,headimgurl = ? where openId = ?";
             saveOrUpdate(update, member.getNickName(), member.getHeadImgUrl(), member.getOpenId());
         }else {

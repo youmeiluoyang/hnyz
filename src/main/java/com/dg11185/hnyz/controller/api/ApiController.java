@@ -134,9 +134,9 @@ public class ApiController {
                             + "&lang=zh_CN";
                     JSONObject uiJson = JSONObject.parseObject(HttpClientUtils.getRequest(uiUrl));
                     if (!uiJson.containsKey("errcode")) {
-                        user.setOpenId(atJson.getString("openid"));// 获得最新用户信息
-                        user.setHeadImgUrl(atJson.getString("headimgurl"));
-                        user.setNickName(atJson.getString("nikename"));
+                        user.setOpenId(uiJson.getString("openid"));// 获得最新用户信息
+                        user.setHeadImgUrl(uiJson.getString("headimgurl"));
+                        user.setNickName(uiJson.getString("nickname"));
                         // 插入或更新数据
                         userService.saveOrUpdateUser(user);
                     }
@@ -145,7 +145,8 @@ public class ApiController {
                 }
                 if (user != null) {
                     // 将用户保存到会话
-                    session.setAttribute(SysConstant.WX_USER, user);
+                    Member newUser = userService.getUserByOpenid(user.getOpenId());
+                    session.setAttribute(SysConstant.WX_USER, newUser);
                 }
             }
 

@@ -123,8 +123,22 @@ public class UserController {
                 }
             }
         }catch (Exception e) {}
-        APIResponse res = new APIResponse();
+        APIResponse res = new APIResponse(APIResponse.SUCCESS);
         res.initedData().put("isFollow", isFollow);
         return res;
     }
+
+
+    @RequestMapping("/getUser.do")
+    @ResponseBody
+    public APIResponse getUser(@RequestParam String openId) {
+
+        Member oldMember = userService.getUserByOpenid(openId);
+
+        APIResponse res =  new APIResponse(APIResponse.SUCCESS);
+        res.initedData().put("user", oldMember);
+        return res;
+    }
+
+
 }
