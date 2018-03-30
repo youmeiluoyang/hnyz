@@ -8,6 +8,7 @@
     <tr>
         <%--<th>openId</th>--%>
         <th>昵称</th>
+        <th>网点</th>
         <th>头像</th>
         <th>手机号码</th>
         <th>账户名</th>
@@ -21,6 +22,7 @@
         <tr>
             <%--<td>${mem.openId}</td>--%>
             <td>${mem.nickName }</td>
+            <td>${mem.orgName }</td>
             <td><img style="width: 30px;height: 30px;" src="${mem.headImgUrl}"></td>
             <td>${mem.telephone }</td>
             <td>${mem.accountName}</td>
