@@ -37,7 +37,7 @@ public class MemberDao extends BaseDAO {
      * @return
      */
     public PageWrap<Member> queryMemberByPage(SearchForm searchForm) {
-        StringBuilder sql = new StringBuilder("select a.*,b.names orgName from tb_member a,tb_org b where a.orgNo=b.orgNo ");
+        StringBuilder sql = new StringBuilder("select a.*,b.names orgName from tb_member a left JOIN tb_org b  on a.orgNo=b.orgNo where 1 = 1");
         if(StringUtils.isNotEmpty(searchForm.getKeywords())){
             sql.append(" and accountName  like '%").append(searchForm.getKeywords()).append("%'");
             sql.append(" or telephone like '%").append(searchForm.getKeywords()).append("%'");
