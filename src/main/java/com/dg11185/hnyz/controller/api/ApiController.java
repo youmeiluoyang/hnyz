@@ -58,13 +58,19 @@ public class ApiController {
                 user.setOpenId(StringUtils.isBlank(testOpenid) ? "123456" : testOpenid);
                 session.setAttribute(SysConstant.WX_USER, user);
             }
-            if (session.getAttribute(SysConstant.WX_USER) != null) {
-                rsp.initedData().put("isLogin", true);
-                rsp.initedData().put("user", session.getAttribute(SysConstant.WX_USER));
+            Member member = (Member) session.getAttribute(SysConstant.WX_USER);
+            if (member != null) {
+                Member newMember = userService.getUserByOpenid(member.getOpenId());
+                if (newMember != null) {
+                    session.setAttribute(SysConstant.WX_USER, newMember);
+                    rsp.initedData().put("isLogin", true);
+                    rsp.initedData().put("user", newMember);
+                }else {
+                    return new APIResponse(APIResponse.ERROR, "没有找到该用户", null);
+                }
             } else {
                 rsp.initedData().put("isLogin", false);
             }
-
             return rsp;
         } catch (Exception e) {
             return new APIResponse(APIResponse.INNER_ERROR);
