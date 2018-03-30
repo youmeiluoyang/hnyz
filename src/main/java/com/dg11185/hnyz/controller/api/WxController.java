@@ -1,5 +1,6 @@
 package com.dg11185.hnyz.controller.api;
 
+import com.dg11185.hnyz.bean.common.ResponseForm;
 import com.dg11185.hnyz.common.exception.AppException;
 import com.dg11185.hnyz.service.api.WeixinService;
 import com.dg11185.hnyz.util.LogUtil;
@@ -102,6 +103,17 @@ public class WxController {
         return  respMessage;
     }
 
+
+
+    /**
+     * 测试
+     */
+    @RequestMapping(value = "test.do")
+    @ResponseBody
+    public Object test(HttpServletRequest request, HttpServletResponse response){
+        weixinService.getAccessToken();
+        return  new ResponseForm();
+    }
 
 
 

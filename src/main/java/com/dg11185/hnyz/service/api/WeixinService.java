@@ -21,4 +21,11 @@ public interface WeixinService {
      * @throws AesException
      */
     String decryptWxMessage(String msgSignature, String timeStamp, String nonce, String postData) throws AesException;
+
+
+    /**
+     * 获取公众号access_token
+     * @return
+     */
+    String getAccessToken();
 }
