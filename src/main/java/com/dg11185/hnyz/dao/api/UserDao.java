@@ -24,8 +24,8 @@ public class UserDao extends BaseDAO  {
         }
     }
 
-    public Member getUserByOpenid(String openid) {
-        String sql = "select * from tb_member where openId = ?";
+    public Member getUserByOpenid(String openid) {String sql = "select * from tb_member where openId = ?";
+
         Member member = queryForBean(sql, new Object[]{openid}, Member.class);
         return member;
     }

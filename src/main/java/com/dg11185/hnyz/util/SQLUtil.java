@@ -198,12 +198,7 @@ public class SQLUtil {
 					keyValue = field.get(obj);
 				} else {
 					columnSB.append(field.getName());	
-					if("class java.util.Date".equals(field.getType().toString())
-							&& field.get(obj) != null){
-						String timeStr = DateUtil.formatDate((Date)field.get(obj), "yyyy-MM-dd HH:mm:ss");
-						columnSB.append("=to_date(?, 'yyyy-MM-dd HH24:mi:ss')");
-						params.add(timeStr);
-					}else{
+					if(field.get(obj) != null){
 						columnSB.append("=?");
 						params.add(field.get(obj));
 					}
