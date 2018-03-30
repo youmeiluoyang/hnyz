@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public class OrgDao extends BaseDAO {
 
-    public List<Org> getOrg() {
+    public List<Org> getOrgs() {
         String sql = "select * from tb_org";
         return queryForList(sql, Org.class);
     }

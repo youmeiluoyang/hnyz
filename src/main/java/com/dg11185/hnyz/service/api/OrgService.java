@@ -11,5 +11,7 @@ import java.util.List;
  */
 
 public interface OrgService {
-    List<Org> getOrg();
+    List<Org> getOrgs();
+
+    Org getOrg(String orgNo);
 }

@@ -1,6 +1,6 @@
 package com.dg11185.hnyz.service.api;
 
-import com.dg11185.hnyz.bean.User;
+import com.dg11185.hnyz.bean.Member.Member;
 
 /**
  * @Author zouwei
@@ -8,7 +8,10 @@ import com.dg11185.hnyz.bean.User;
  */
 
 public interface UserService {
-    void saveOrUpdateUser(User newUser);
 
-    User getUserByOpenid(String openid);
+    void saveOrUpdateUser(Member newUser);
+
+    Member getUserByOpenid(String openid);
+
+    void update(Member oldMember);
 }
