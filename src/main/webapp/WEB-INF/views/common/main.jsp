@@ -29,7 +29,7 @@
     
     <!--左侧菜单menu/s -->
     <div class="menu">
-		<a href=""><h1><img src="${ctx}/resources/images/avatar.png" alt="邮美洛阳">邮美洛阳</h1></a>
+		<a href="${ctx}/common/index.do"><h1><img src="${ctx}/resources/images/avatar.png" alt="邮美洛阳">邮美洛阳</h1></a>
         <div class="category">
 			<div class="cate">
 				<c:forEach items="${menu}" var="mainMenu">
@@ -48,6 +48,11 @@
     <!--右侧主体内容main/s -->
     <div class="main">
         <decorator:body></decorator:body>
+		<!-- 浮动提示/S -->
+		<div class="float hide" id="floatTip">
+			<img class="tip" src="${ctx}/resources/images/loading.gif">
+		</div>
+		<!-- 浮动提示/E -->
     </div>
     <!--右侧主体内容main/e -->
 

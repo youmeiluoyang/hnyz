@@ -59,7 +59,7 @@ $(function(){
                     //展开父菜单
                     $('.cate').removeClass('current');
                     par.parent().addClass('current');
-                    $('.cate_bd').slideUp();
+                    //$('.cate_bd').slideUp();
                     par.next().slideDown();
                     $(this).addClass("on");
                 }
@@ -117,11 +117,29 @@ function addDays(dateStr,days){
 
 /**
  * 页面跳转
- * @param toPage
+ * @param pageNum
  */
-function pageJump(toPage){
-	$("#toPage").val(toPage);
-	search();
+function pageJump(pageNum){
+	$("#pageNum").val(pageNum);
+    search();
+}
+
+/**
+ * 点击跳转按钮
+ * @param pageNum
+ */
+function pageJumpBtn(){
+    var pageNum =$("input[name='toPage_']").val();
+    var totalPage=$("input[name='totalPages_']").val();
+    if(pageNum<1){
+        alert("页码不能小于1");
+        return;
+    }
+    if(pageNum>totalPage){
+        alert("页码不能大于总页数");
+        return;
+    }
+    pageJump(pageNum);
 }
 
 
@@ -179,7 +197,7 @@ function changeOrg(orgNo, sel) {
  * 从第一页开始查询
  */
 function doSearch(){
-	$("#toPage").val(1);
+	$("#pageNum").val(1);
 	search();
 }
 
@@ -231,3 +249,58 @@ Date.prototype.format = function(format){
 	}
 	return format;
 };
+
+
+
+var showloading = function () {
+    $("#floatTip").removeClass("hide");
+
+};
+
+var hideloading = function () {
+    $("#floatTip").addClass("hide");
+
+};
+/**
+ * 局部加载页面方法
+ * @param url
+ * @param container
+ * @param target
+ */
+var loadUrl = function (url, container,data,callBack) {
+    $.ajax({
+        type: "POST",
+        url: url,
+        dataType: 'html',
+        data:data,
+        cache: false, // (warning: this will cause a timestamp and will call the request twice)
+        beforeSend: function () {
+            $("html").animate({
+                scrollTop: 0
+            }, 1000);
+            showloading();
+        },
+        complete: function () {
+            setTimeout(function () {
+
+            }, 500);
+        },
+        success: function (data, textStatus, xhr) {
+            container.empty();
+            container.css({
+                opacity: '0.0'
+            }).html(data).delay(50).animate({opacity: '1.0'}, 300);
+            hideloading();
+            if(callBack!=undefined){
+                callBack();
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            // 统一异常信息提示
+            var json = JSON.parse(xhr.responseText);
+            alert(json.message);
+        },
+        async: true
+    });
+};
+

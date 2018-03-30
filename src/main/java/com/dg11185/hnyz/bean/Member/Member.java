@@ -19,7 +19,7 @@ public class Member implements Serializable{
     private String address;
     private String orgNo;
     private int score;
-    private Date date;
+    private Date createDate;
 
 
     public String getIds() {
@@ -102,11 +102,11 @@ public class Member implements Serializable{
         this.score = score;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

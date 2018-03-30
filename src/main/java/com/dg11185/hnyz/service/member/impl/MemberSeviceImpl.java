@@ -3,6 +3,7 @@ package com.dg11185.hnyz.service.member.impl;
 import com.dg11185.hnyz.bean.Member.Member;
 import com.dg11185.hnyz.bean.Member.MemberIncreaseForm;
 import com.dg11185.hnyz.bean.common.PageWrap;
+import com.dg11185.hnyz.bean.common.SearchForm;
 import com.dg11185.hnyz.dao.member.MemberDao;
 import com.dg11185.hnyz.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class MemberSeviceImpl implements MemberService{
     }
 
     @Override
-    public PageWrap<Member> queryMemberByPage() {
-        PageWrap<Member> wrap = memberDao.queryMemberByPage();
+    public PageWrap<Member> queryMemberByPage(SearchForm searchForm) {
+        PageWrap<Member> wrap = memberDao.queryMemberByPage(searchForm);
         return wrap;
     }
 }

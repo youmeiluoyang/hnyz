@@ -14,6 +14,6 @@
         </span>
         <input type="text" name="toPage_" value="${param.curPage}" class="bw-skip-page" />
         <input type="hidden" name="totalPages_" value="${param.totalPages}" />
-        <button class="bw-skip" onclick="pageJump(-1,null,'${param.searchFormName }');" id="pageJumpBtn">跳转</button>
+        <button class="bw-skip" onclick="pageJumpBtn();" id="pageJumpBtn">跳转</button>
     </div>
 </div>

@@ -3,6 +3,7 @@ package com.dg11185.hnyz.service.member;
 import com.dg11185.hnyz.bean.Member.Member;
 import com.dg11185.hnyz.bean.Member.MemberIncreaseForm;
 import com.dg11185.hnyz.bean.common.PageWrap;
+import com.dg11185.hnyz.bean.common.SearchForm;
 
 import java.util.List;
 
@@ -27,6 +28,6 @@ public interface MemberService {
      *
      * @return
      */
-    PageWrap<Member> queryMemberByPage();
+    PageWrap<Member> queryMemberByPage(SearchForm searchForm);
 
 }

@@ -562,3 +562,22 @@ table .sum {
     margin: 0 auto;
     text-align: center;
 }
+
+.float {
+    position: fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+
+.float .tip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hide {
+    display:none;
+}

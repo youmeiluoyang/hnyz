@@ -2,9 +2,10 @@ package com.dg11185.hnyz.dao.member;
 
 import com.dg11185.hnyz.bean.Member.Member;
 import com.dg11185.hnyz.bean.Member.MemberIncreaseForm;
-import com.dg11185.hnyz.bean.common.PageRequest;
 import com.dg11185.hnyz.bean.common.PageWrap;
+import com.dg11185.hnyz.bean.common.SearchForm;
 import com.dg11185.hnyz.dao.BaseDAO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,10 +36,13 @@ public class MemberDao extends BaseDAO {
      *
      * @return
      */
-    public PageWrap<Member> queryMemberByPage() {
-        String sql = "select * from tb_member";
-        PageRequest pageRequest = new PageRequest();
-        PageWrap<Member> wrap = this.queryForPage(sql,new Object[]{},pageRequest,Member.class);
+    public PageWrap<Member> queryMemberByPage(SearchForm searchForm) {
+        StringBuilder sql = new StringBuilder("select * from tb_member ");
+        if(StringUtils.isNotEmpty(searchForm.getKeywords())){
+            sql.append(" where accountName  like '%").append(searchForm.getKeywords()).append("%'");
+            sql.append(" or telephone like '%").append(searchForm.getKeywords()).append("%'");
+        }
+        PageWrap<Member> wrap = this.queryForPage(sql.toString(),new Object[]{},searchForm,Member.class);
         return wrap;
     }
 

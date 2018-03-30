@@ -1,10 +1,14 @@
 package com.dg11185.hnyz.controller.member;
 
+import com.dg11185.hnyz.bean.Member.Member;
 import com.dg11185.hnyz.bean.Member.MemberIncreaseForm;
 import com.dg11185.hnyz.bean.common.PageRequest;
+import com.dg11185.hnyz.bean.common.PageWrap;
+import com.dg11185.hnyz.bean.common.SearchForm;
 import com.dg11185.hnyz.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -40,11 +44,19 @@ public class MemberController {
      * 用户列表
      */
     @RequestMapping(value = "list.do")
-    public  String  list(HttpServletRequest request, HttpSession session, PageRequest pageRequest) {
-        memberService.queryMemberByPage();
+    public  String  list(HttpServletRequest request, HttpSession session, PageRequest pageRequest, Model model) {
         return "member/list";
     }
 
+    /**
+     * 异步返回列表数据
+     */
+    @RequestMapping(value = "listAjax.do")
+    public  String  listAjax(HttpServletRequest request, HttpSession session, SearchForm searchForm, Model model) {
+        PageWrap<Member> wrap = memberService.queryMemberByPage(searchForm);
+        model.addAttribute("wrap",wrap);
+        return "member/ajax/listAjax";
+    }
 
 
 }
