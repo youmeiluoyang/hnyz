@@ -57,6 +57,7 @@ public class ApiController {
                 user.setIds("1000000");
                 user.setOpenId(StringUtils.isBlank(testOpenid) ? "123456" : testOpenid);
                 session.setAttribute(SysConstant.WX_USER, user);
+                userService.saveOrUpdateUser(user);
             }
             Member member = (Member) session.getAttribute(SysConstant.WX_USER);
             if (member != null) {
@@ -67,7 +68,7 @@ public class ApiController {
                     rsp.initedData().put("user", newMember);
                 }else {
                     session.removeAttribute(SysConstant.WX_USER);
-                    return new APIResponse(APIResponse.ERROR, "没有找到该用户", null);
+                    rsp.initedData().put("isLogin", false);
                 }
             } else {
                 rsp.initedData().put("isLogin", false);
