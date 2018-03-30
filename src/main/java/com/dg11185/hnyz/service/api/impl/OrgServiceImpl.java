@@ -20,7 +20,13 @@ public class OrgServiceImpl implements OrgService {
     private OrgDao orgDao;
 
     @Override
-    public List<Org> getOrg() {
-        return orgDao.getOrg();
+    public List<Org> getOrgs() {
+        return orgDao.getOrgs();
+    }
+
+    @Override
+    public Org getOrg(String orgNo) {
+        String sql = "select * from tb_org where orgNo = ?";
+        return orgDao.queryForBean(sql, new Object[]{orgNo}, Org.class);
     }
 }

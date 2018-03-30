@@ -23,7 +23,9 @@ public class WXConstant {
     //public final static String OAUTH2_ACCESS_TOKEN = ResourceConfig.getWxApiConfig().getProperty("address.oauth2.component.accessToken");
 
     // 网页授权 获取用户信息
-    public final static String USER_INFO = ResourceConfig.getWxApiConfig().getProperty("address.userinfo");
+    public final static String WEB_USER_INFO = ResourceConfig.getWxApiConfig().getProperty("address.userinfo");
+
+    public  final static String USER_INFO = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN";
 
 
 }

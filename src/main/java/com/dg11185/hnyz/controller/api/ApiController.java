@@ -1,7 +1,7 @@
 package com.dg11185.hnyz.controller.api;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dg11185.hnyz.bean.User;
+import com.dg11185.hnyz.bean.Member.Member;
 import com.dg11185.hnyz.bean.common.APIResponse;
 import com.dg11185.hnyz.common.config.SysConfig;
 import com.dg11185.hnyz.common.constant.SysConstant;
@@ -53,18 +53,25 @@ public class ApiController {
         try {
             APIResponse rsp = new APIResponse(APIResponse.SUCCESS);
             if (StringUtils.isNotBlank(test) && "test".equals(test)) {	// *************************测试代码
-                User user = new User();
-                user.setIds(1000000);
-                user.setOpenid(StringUtils.isBlank(testOpenid) ? "123456" : testOpenid);
+                Member user = new Member();
+                user.setIds("1000000");
+                user.setOpenId(StringUtils.isBlank(testOpenid) ? "123456" : testOpenid);
                 session.setAttribute(SysConstant.WX_USER, user);
             }
-            if (session.getAttribute(SysConstant.WX_USER) != null) {
-                rsp.initedData().put("isLogin", true);
-                rsp.initedData().put("user", session.getAttribute(SysConstant.WX_USER));
+            Member member = (Member) session.getAttribute(SysConstant.WX_USER);
+            if (member != null) {
+                Member newMember = userService.getUserByOpenid(member.getOpenId());
+                if (newMember != null) {
+                    session.setAttribute(SysConstant.WX_USER, newMember);
+                    rsp.initedData().put("isLogin", true);
+                    rsp.initedData().put("user", newMember);
+                }else {
+                    session.removeAttribute(SysConstant.WX_USER);
+                    return new APIResponse(APIResponse.ERROR, "没有找到该用户", null);
+                }
             } else {
                 rsp.initedData().put("isLogin", false);
             }
-
             return rsp;
         } catch (Exception e) {
             return new APIResponse(APIResponse.INNER_ERROR);
@@ -124,33 +131,29 @@ public class ApiController {
             log.info("微信返回：{}", atJson);
             // 成功获取accessToken
             if (!atJson.containsKey("errcode")) {
-                User user = null;
+                Member user = new Member();
                 // 需要获得完整用户信息
                 if (atJson.getString("scope").contains("snsapi_userinfo")) {
                     // 根据openid，请求微信接口获得用户信息
-                    String uiUrl = WXConstant.USER_INFO
+                    String uiUrl = WXConstant.WEB_USER_INFO
                             + "access_token=" + atJson.getString("access_token")
                             + "&openid=" + atJson.getString("openid")
                             + "&lang=zh_CN";
                     JSONObject uiJson = JSONObject.parseObject(HttpClientUtils.getRequest(uiUrl));
-                    if (!uiJson.containsKey("errcode")) {    // 获得最新用户信息
-                        User newUser = uiJson.toJavaObject(User.class);
-                        newUser.setPrivilegess(uiJson.getString("privilege"));
+                    if (!uiJson.containsKey("errcode")) {
+                        user.setOpenId(uiJson.getString("openid"));// 获得最新用户信息
+                        user.setHeadImgUrl(uiJson.getString("headimgurl"));
+                        user.setNickName(uiJson.getString("nickname"));
                         // 插入或更新数据
-                        userService.saveOrUpdateUser(newUser);
-                        user = newUser;
+                        userService.saveOrUpdateUser(user);
                     }
-                    // 获得数据库中的数据
-                    //user = userService.getUserByOpenid(atJson.getString("openid"));
-
-
                 } else {// 不需要获得完整用户信息，仅需获得openid
-                    user = new User();
-                    user.setOpenid(atJson.getString("openid"));
+                    user.setOpenId(atJson.getString("openid"));
                 }
                 if (user != null) {
                     // 将用户保存到会话
-                    session.setAttribute(SysConstant.WX_USER, user);
+                    Member newUser = userService.getUserByOpenid(user.getOpenId());
+                    session.setAttribute(SysConstant.WX_USER, newUser);
                 }
             }
 
@@ -169,7 +172,7 @@ public class ApiController {
     @RequestMapping("/getUserInfo.do")
     @ResponseBody
     public APIResponse getUserInfo(HttpSession session) {
-        User user = (User) session.getAttribute(SysConstant.WX_USER);
+        Member user = (Member) session.getAttribute(SysConstant.WX_USER);
         APIResponse rsp = new APIResponse(APIResponse.SUCCESS);
         rsp.initedData().put("user", user);
         return rsp;
