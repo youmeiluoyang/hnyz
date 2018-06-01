@@ -1,1 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
+/src/main/resources/env/prod/jdbc.properties
+/src/main/resources/env/prod/secret.properties
+catalina.home_IS_UNDEFINED/
+hnyz.iws
+target/
+/src/main/resources/env/test/secret.properties
+/src/main/resources/env/test/jdbc.properties
