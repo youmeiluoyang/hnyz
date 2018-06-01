@@ -1,9 +1,17 @@
 package com.dg11185.hnyz.util.wx;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dg11185.hnyz.bean.common.wx.Article;
 import com.dg11185.hnyz.bean.common.wx.NewsMessage;
+import com.dg11185.hnyz.bean.common.wx.RedPack;
+import com.dg11185.hnyz.common.constant.WXConstant;
+import com.dg11185.hnyz.util.EncryptUtil;
 import com.dg11185.hnyz.util.XmlUtil;
+import com.dg11185.util.common.ReflectionUtil;
 import com.thoughtworks.xstream.XStream;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Created by xiesp on 2016/12/14.
@@ -103,6 +111,96 @@ public class WxMessageUtil {
         xstream.alias("xml", NewsMessage.class);
         xstream.alias("item", Article.class);
         return xstream.toXML(newsMessage);
+    }
+
+
+    /**
+     * 微信红包对象转换成xml
+     * @return xml
+     */
+    public static String messageToXml(RedPack redPack) {
+        xstream.alias("xml", RedPack.class);
+        return xstream.toXML(redPack);
+    }
+
+
+    /**
+     * 生成微信加密需要的随机32位字符串
+     * @return
+     */
+    public static String getNonceStr(){
+        Random random = new Random();
+        char[] chars = new char[32];
+        for(int i = 0;i < 32;i++){
+            int type = random.nextInt(10);
+            //生成0-9
+            if(type%2==0){
+                int num = random.nextInt(10) + 48;
+                chars[i] = (char)(num);
+            }else{
+                int num = random.nextInt(26) + 65;
+                chars[i] = (char)num;
+            }
+        }
+        return new String(chars);
+    }
+
+
+    /**
+     * 微信AP加密
+     * @return
+     */
+    public static String wxApiSing(Object object,String key){
+        String result = "";
+        List<Field> list =  ReflectionUtil.getNotNullField(object);
+        Map<String,String> sortMap = new TreeMap<>();
+        try {
+            for(int i =0,len = list.size();i<len;i++){
+                sortMap.put(list.get(i).getName(), (String) list.get(i).get(object));
+            }
+            StringBuilder sb = new StringBuilder();
+            for(Map.Entry<String,String> entry:sortMap.entrySet()){
+                sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+            sb.append("key=").append(key);
+            String temp = EncryptUtil.MD5Digest(sb.toString());
+            result = temp.toUpperCase();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+
+    }
+
+
+    /**
+     * 微信JSAPI签名
+     * @return
+     */
+    public static Map<String,String> wxJSApiSign(String url,String jsApiTicket){
+        long timestamp = (new Date()).getTime() / 1000;
+        String nonceStr = WxMessageUtil.getNonceStr();
+        String result = "";
+        Map<String,String> sortMap = new TreeMap<>();
+        try {
+            sortMap.put("noncestr",nonceStr);
+            sortMap.put("jsapi_ticket",jsApiTicket);
+            sortMap.put("timestamp",timestamp+"");
+            sortMap.put("url",url);
+            StringBuilder sb = new StringBuilder();
+            for(Map.Entry<String,String> entry:sortMap.entrySet()){
+                sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+            String finalRe = sb.substring(0,sb.length() -1);
+            String sha1 = EncryptUtil.sha1(finalRe);
+            sortMap.put("signature",sha1);
+            sortMap.put("appid", WXConstant.APP_ID);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(JSONObject.toJSONString(sortMap));
+        return sortMap;
+
     }
 
 }

@@ -23,6 +23,8 @@ public class SysConfig implements FileChangeCallback{
     private static final Properties baseConfig;
     private static final Properties sysConfig;
     private static final SysConfig instance;
+    public  static final String ip;
+    public static final  String domain;
     //对外无实例
     private SysConfig(){
     }
@@ -37,12 +39,6 @@ public class SysConfig implements FileChangeCallback{
             baseConfig.load(baseInputStream);
             String path = "/env/" + baseConfig.getProperty("env.default");
             instance.load(path);
-            //注册到文件监听
-/*            String classPath = SysConfig.class.getResource("/").getFile();
-            String configFile = classPath + "env/" + baseConfig.getProperty("env.default");
-            File file = new File(configFile);
-            MonitorKey monitorKey = new MonitorKey(file, MonitorEvent.UPDATE);
-            FileMonitorMgr.addFileToMonitor(monitorKey, instance);*/
         } catch (IOException e) {
             e.printStackTrace();
         } finally{
@@ -52,6 +48,8 @@ public class SysConfig implements FileChangeCallback{
                 e.printStackTrace();
             }
         }
+        ip=sysConfig.getProperty("project.ip");
+        domain=sysConfig.getProperty("project.domain");
     }
 
     //加载

@@ -4,8 +4,9 @@ import com.dg11185.hnyz.common.exception.AesException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
-import com.thoughtworks.xstream.io.xml.XppDriver;
+import com.thoughtworks.xstream.io.xml.Xpp3Driver;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -31,15 +32,20 @@ public class XmlUtil {
 	/**
 	 * 扩展xstream使其支持CDATA
 	 */
-	private static final XStream xstream = new XStream(new XppDriver() {
+	private static final XStream xstream = new XStream(new Xpp3Driver(new NoNameCoder()) {
 		public HierarchicalStreamWriter createWriter(Writer out) {
 			return new PrettyPrintWriter(out) {
 				// 对所有xml节点的转换都增加CDATA标记
 				boolean cdata = true;
 
-				@SuppressWarnings("unchecked")
+				@Override
 				public void startNode(String name, Class clazz) {
 					super.startNode(name, clazz);
+				}
+
+				@Override
+				public String encodeNode(String name) {
+					return name;
 				}
 
 				protected void writeText(QuickWriter writer, String text) {

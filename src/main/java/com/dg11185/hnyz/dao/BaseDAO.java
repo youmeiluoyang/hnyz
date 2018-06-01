@@ -30,11 +30,27 @@ public abstract class BaseDAO extends JdbcDaoSupport {
     public void setJb(JdbcTemplate jb) {
         super.setJdbcTemplate(jb);
     }
-
+    @Resource
+    private JdbcTemplate jdbcTemplate;
 
     public <T> PageWrap<T> queryForPage(String sql, Object[] args, PageRequest pageRequest,
                                         Class<T> clazz) {
         return queryForPage(sql, Arrays.asList(args), pageRequest, clazz);
+    }
+
+    public JdbcTemplate getJb(){
+        return jdbcTemplate;
+    }
+
+
+    /**
+     * 获取下一个序列的值
+     * @return
+     */
+    public int getNextSqlValue(String seqName) {
+        String sql = new StringBuilder("select nextval('").append(seqName).append("');").toString();
+        int value = this.jdbcTemplate.queryForObject(sql,Integer.class);
+        return value;
     }
 
     /**

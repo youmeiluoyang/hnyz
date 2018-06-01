@@ -6,6 +6,7 @@ import com.dg11185.hnyz.common.config.ResourceConfig;
 import com.dg11185.hnyz.common.exception.AesException;
 import com.dg11185.hnyz.common.exception.WxCallException;
 import com.dg11185.hnyz.service.api.WeixinService;
+import com.dg11185.hnyz.util.ServiceFacade;
 import com.dg11185.hnyz.util.wx.WXBizMsgCrypt;
 import com.dg11185.util.network.HttpClientUtils;
 import org.slf4j.Logger;
@@ -63,6 +64,28 @@ public class WeixinServiceImpl implements WeixinService {
             return accessToken;
         }else{
             throw new WxCallException(errmsg,errcode,"[公众号管理]获取微信access_token失败");
+        }
+    }
+
+
+    @Override
+    @Cacheable(value = "accessTokenCache",key="'jsApiTicket'")
+    public String gerJsApiToken() {
+        WeixinService weixinService = ServiceFacade.getBean(WeixinService.class);
+        String accessToken = weixinService.getAccessToken();
+        StringBuilder url = new StringBuilder(ResourceConfig.getWxApiConfig().getProperty("address.jsApiAccessToken"));
+        url.append(accessToken);
+        String result = HttpClientUtils.getByHttps(url.toString());
+        JSONObject json = JSON.parseObject(result);
+        String errcode = json.getString("errcode");
+        String errmsg = json.getString("errmsg");
+        String ticket = null;
+        if(errcode == null ||  "0".equals(errcode)){
+            ticket = json.getString("ticket");
+            log.info("[公众号管理]获取jsApi ticket:{}",ticket);
+            return ticket;
+        }else{
+            throw new WxCallException(errmsg,errcode,"[公众号管理]获取jsAPi ticket失败");
         }
     }
 }

@@ -14,4 +14,7 @@ public class SysConstant {
     /** 微信用户登陆session*/
     public static final String WX_USER = "WX_USER_SESSION";
 
+    /**前端的组件**/
+    public static final String WX_FRONT_USER = "WX_FRONT_USER";
+
 }

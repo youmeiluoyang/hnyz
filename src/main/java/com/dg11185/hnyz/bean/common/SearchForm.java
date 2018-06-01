@@ -8,7 +8,16 @@ package com.dg11185.hnyz.bean.common;
  */
 public class SearchForm extends PageRequest {
     private String keywords;
+    private String lotteryId;
 
+
+    public String getLotteryId() {
+        return lotteryId;
+    }
+
+    public void setLotteryId(String lotteryId) {
+        this.lotteryId = lotteryId;
+    }
 
     public String getKeywords() {
         return keywords;

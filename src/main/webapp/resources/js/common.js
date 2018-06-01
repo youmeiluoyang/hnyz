@@ -281,6 +281,7 @@ var loadUrl = function (url, container,data,callBack) {
             showloading();
         },
         complete: function () {
+            hideloading();
             setTimeout(function () {
 
             }, 500);

@@ -28,4 +28,9 @@ public interface WeixinService {
      * @return
      */
     String getAccessToken();
+
+    /**
+     * 获取jS接口的token
+     */
+    String gerJsApiToken();
 }

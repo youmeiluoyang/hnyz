@@ -64,6 +64,7 @@
 			<tx:method name="modify*" propagation="REQUIRED" />
             <tx:method name="invalidate*" propagation="REQUIRED" />
             <tx:method name="import*" propagation="REQUIRED" />
+            <tx:method name="do*" propagation="REQUIRED" />
             <!--事务参与,保证线程可见性-->
 			<tx:method name="get*" propagation="SUPPORTS"/>
 			<tx:method name="load*" propagation="SUPPORTS"/>

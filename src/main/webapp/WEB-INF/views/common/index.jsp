@@ -14,7 +14,7 @@
   	<div class="location_min"></div>
       <div class="main_right">
           <h1 class="center">会员注册统计</h1>
-          <div id="echart" style="width: 90%;height:90%;"></div>
+          <div id="echart" style="width: 90%;height:1000px;"></div>
 
           <div class="pcnyList" id="dataTable">
           </div>

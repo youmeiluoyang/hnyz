@@ -137,6 +137,19 @@ public class HttpClientUtils {
         entity.setContentType("text/plain; charset=utf-8");
         entity.setContentEncoding("UTF-8");
         post.setEntity(entity);
+        String resultStr = HttpClientUtils.handleRequest(post,false);
+        return  resultStr;
+    }
+
+    /**
+     * 用证书发送请求
+     */
+    public static String postWithCert(String urlStr,String params){
+        HttpPost post = new HttpPost(urlStr);
+        StringEntity entity = new StringEntity(params, "UTF-8");
+        entity.setContentType("text/plain; charset=utf-8");
+        entity.setContentEncoding("UTF-8");
+        post.setEntity(entity);
         String resultStr = HttpClientUtils.handleRequest(post,true);
         return  resultStr;
     }
@@ -147,7 +160,7 @@ public class HttpClientUtils {
      */
     public static String getByHttps(String urlStr){
         HttpGet get = new HttpGet(urlStr);
-        String resultStr =  HttpClientUtils.handleRequest(get,true);
+        String resultStr =  HttpClientUtils.handleRequest(get,false);
         return resultStr;
     }
 
@@ -158,7 +171,7 @@ public class HttpClientUtils {
                 .build();
         HttpPost httpPost = new HttpPost(url);
         httpPost.setEntity(httpEntity);
-        return handleRequest(httpPost, true);
+        return handleRequest(httpPost, false);
     }
 
     public static String postFileByUrl(String toUrl, String fromUrl) {
@@ -188,7 +201,7 @@ public class HttpClientUtils {
                 HttpPost httpPost = new HttpPost(toUrl);
                 httpPost.setEntity(httpEntity);
                 // 开始上传
-                responseStr = handleRequest(httpPost, true);
+                responseStr = handleRequest(httpPost, false);
             }
         } catch (Exception e) {
             log.error("[HTTPCLIENTS]:网络请求发生错误:"+ LogUtil.getTrace(e));
@@ -213,8 +226,7 @@ public class HttpClientUtils {
     private static String handleRequest(HttpUriRequest request, boolean isHttps){
         long start = System.currentTimeMillis();
         String resultStr = "";
-        //TODO 生产环境出现问题,解决的时候在换位HTTPS把
-        CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();//isHttps?HttpClientUtils.getHttpsClient() :HttpClients.createDefault();
+        CloseableHttpClient httpClient = isHttps?HttpClientUtils.getHttpsClient() :HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
         CloseableHttpResponse response = null;
         try {
             response = httpClient.execute(request);
@@ -290,7 +302,7 @@ public class HttpClientUtils {
      */
     public static CloseableHttpClient getHttpsClient(){
         CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(requestConfig)
-                .setSSLSocketFactory(HttpClientUtils.createSSLConnSocketFactory()).build();
+                .setSSLSocketFactory(CertLoader.getSSLConnectionSocketFactory()).build();
         return httpclient;
     }
 

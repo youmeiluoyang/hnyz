@@ -11,6 +11,7 @@
 <meta http-equiv="expires" content="0">
 <title>邮美洛阳公众号管理系统<decorator:title></decorator:title>   </title>
 <link rel="stylesheet" href="${ctx }/resources/css/base.css"/>
+	<link rel="stylesheet" href="${ctx }/resources/css/bootstrap.min.css"/>
 <script type="text/javascript" src="${basepath}/resources/js/jquery.md5.js"></script>
 <decorator:head></decorator:head>
 </head>

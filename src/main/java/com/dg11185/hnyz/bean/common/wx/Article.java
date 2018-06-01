@@ -5,32 +5,41 @@ package com.dg11185.hnyz.bean.common.wx;
  * Created by xiesp on 2016/12/14.
  */
 public class Article {
-    private String Title;//标题
-    private String Description;//描述
-    private String PicUrl;//图片地址
-    private String Url;//跳转地址
+    private String title;//标题
+    private String description;//描述
+    private String picurl;//图片地址
+    private String url;//跳转地址
+
+
     public String getTitle() {
-        return Title;
+        return title;
     }
+
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
+
     public String getDescription() {
-        return Description;
+        return description;
     }
+
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
-    public String getPicUrl() {
-        return PicUrl;
+
+    public String getPicurl() {
+        return picurl;
     }
-    public void setPicUrl(String picurl) {
-        PicUrl = picurl;
+
+    public void setPicurl(String picurl) {
+        this.picurl = picurl;
     }
+
     public String getUrl() {
-        return Url;
+        return url;
     }
+
     public void setUrl(String url) {
-        Url = url;
+        this.url = url;
     }
 }

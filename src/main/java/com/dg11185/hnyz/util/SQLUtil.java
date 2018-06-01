@@ -35,7 +35,7 @@ public class SQLUtil {
 		List<Object> paramValues = new ArrayList<Object>(); // 记录对象参数值
 		List<Integer> paramsType = new ArrayList<Integer>(); // 记录参数值类型
 		// 查询待插入对象的属性值不为空的属性名称
-		List<Object> fieldList = ReflectionUtil.getNotNullField(obj);
+		List<Field> fieldList = ReflectionUtil.getNotNullField(obj);
 		try {
 			for (int i = 0; i < fieldList.size(); i++) {
 				Field field = (Field) fieldList.get(i);
@@ -181,7 +181,7 @@ public class SQLUtil {
 		List<Object> params = new ArrayList<Object>();
 		Object keyValue = null;
 		// 获取属性值不为空的数据表字段名称
-		List<Object> fieldList = includeNull ? ReflectionUtil.getAllField(obj) : ReflectionUtil.getNotNullField(obj);
+		List<Field> fieldList = includeNull ? (List<Field>)ReflectionUtil.getAllField(obj) : ReflectionUtil.getNotNullField(obj);
 		try {
 			for (int i = 0; i < fieldList.size(); i++) {
 				Field field = (Field) fieldList.get(i);
@@ -330,6 +330,54 @@ public class SQLUtil {
 		sqlBuf.append(")");
 		return sqlBuf.toString();
 	}
+
+
+
+	/**
+	 * 生成类似insert into user(username, password, memo)values(:username, :password, :memo)的SQL语句
+	 *
+	 * @param obj 待生成的对象
+	 * @param tableName 表名称
+	 * @param keyColumn 主见名称，若为null，则表示无主见
+	 * @return 返回SQL语句
+	 */
+	public static String generateNamedInsertSqlWithoutNull(Object obj, String tableName, String keyColumn){
+		StringBuilder sqlBuf = new StringBuilder();
+		StringBuilder colBuf = new StringBuilder();
+		StringBuilder paramBuf = new StringBuilder();
+		Field[] fields = obj.getClass().getDeclaredFields();
+		try {
+			for(int i = 0; i < fields.length; i++){
+                fields[i].setAccessible(true);
+                if(fields[i].get(obj) == null)
+                    continue;
+                colBuf.append(fields[i].getName());
+                if(fields[i].getName().equalsIgnoreCase(keyColumn)){
+                    paramBuf.append(SEQ_PREFIX)
+                            .append(StringUtils.upperCase(obj.getClass().getSimpleName()))
+                            .append(".NEXTVAL");
+                }else{ // 非主键列记录插入SQL语句的参数占位符
+                    paramBuf.append(":");
+                    paramBuf.append(fields[i].getName());
+                }
+				colBuf.append(",");
+				paramBuf.append(",");
+            }
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+		// 生成插入操作的SQL语句
+		sqlBuf.append("insert into ");
+		sqlBuf.append(tableName);
+		sqlBuf.append(" (");
+		sqlBuf.append(colBuf.substring(0,colBuf.length() -1));
+		sqlBuf.append(") ");
+		sqlBuf.append("values");
+		sqlBuf.append(" (");
+		sqlBuf.append(paramBuf.substring(0,paramBuf.length() - 1));
+		sqlBuf.append(")");
+		return sqlBuf.toString();
+	}
 	
 	
 	/**
@@ -343,7 +391,7 @@ public class SQLUtil {
 	public static String generateNamedUpdateSql(Object obj, String tableName, String keyColumn){
 		StringBuilder colBuf = new StringBuilder();
 		// 获取属性值不为空的数据表字段名称
-		List<Object> fieldList = ReflectionUtil.getNotNullField(obj);
+		List<Field> fieldList = ReflectionUtil.getNotNullField(obj);
 		try {
 			for (int i = 0; i < fieldList.size(); i++) {
 				Field field = (Field) fieldList.get(i);

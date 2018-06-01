@@ -77,9 +77,9 @@ public class ReflectionUtil {
 	 * @param obj 待获取的对象
 	 * @return 返回属性值不为空的对象的属性名称列表
 	 */
-	public static List<Object> getNotNullField(Object obj) {
+	public static List<Field> getNotNullField(Object obj) {
 		Class<? extends Object> c = obj.getClass();
-		List<Object> list = new ArrayList<Object>();
+		List<Field> list = new ArrayList<Field>();
 		try {
 			Field[] fields = c.getDeclaredFields();
 			for(int i = 0; i < fields.length; i++){
@@ -126,9 +126,9 @@ public class ReflectionUtil {
      * @param obj 待获取的对象
      * @return 返回属性值不为空的对象的属性名称列表
      */
-    public static List<Object> getAllField(Object obj) {
+    public static List<Field> getAllField(Object obj) {
         Class<? extends Object> c = obj.getClass();
-        List<Object> list = new ArrayList<Object>();
+        List<Field> list = new ArrayList<Field>();
         try {
             Field[] fields = c.getDeclaredFields();
             for(int i = 0; i < fields.length; i++){

@@ -35,7 +35,7 @@ public class LoginFilter implements Filter{
         Object user = session.getAttribute(SysConstant.LOGIN_ADMIN);
         String path = request.getServletPath();
         if(user == null){
-            //如果是白名单地址,或者是API地址
+            //如果是白名单地址,或者是微信API地址
             if(loginSets.contains(path) || path.contains("api")){
                 filterChain.doFilter(servletRequest,servletResponse);
             }else{

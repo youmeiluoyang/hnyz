@@ -1,11 +1,14 @@
 package com.dg11185.hnyz.controller.api;
 
 import com.dg11185.hnyz.bean.common.ResponseForm;
+import com.dg11185.hnyz.bean.common.wx.Article;
 import com.dg11185.hnyz.common.exception.AppException;
+import com.dg11185.hnyz.common.queue.SubscribeQueue;
 import com.dg11185.hnyz.service.api.WeixinService;
 import com.dg11185.hnyz.util.LogUtil;
 import com.dg11185.hnyz.util.XmlUtil;
 import com.dg11185.hnyz.util.wx.WxMessageUtil;
+import com.dg11185.util.queue.QueueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -74,7 +79,19 @@ public class WxController {
                 }
                 // 粉丝 关注
                 else if (WxMessageUtil.WxPushEventType.SUBSCRIBE.getName().equalsIgnoreCase(event)) {
-
+                    String openId = map.get("FromUserName");
+                    List<Article> list = new ArrayList<>();
+                    Article article = new Article();
+                    //article.setDescription("幸运大奖等着你哦")
+                    //article.setTitle("快来参加有奖问卷调查啦");
+                    //article.setUrl("http://ymly888.cn/res/front/html/question.html");
+                    article.setUrl("https://m.ule.com/item/detail/3517637.html?adid=uleapp_fx_merchant");
+                    article.setPicurl("http://ymly888.cn/res/front/img/welcome.jpg");
+                    article.setDescription("拍购麻辣快手系列产品满41元，赠送价值40元即饮型维维豆奶一箱。");
+                    article.setTitle("洛阳邮政携手维维集团感恩回馈客户");
+                    list.add(article);
+                    SubscribeQueue subscribeQueue = new SubscribeQueue(openId,list);
+                    QueueHandler.addQuequeableObject(subscribeQueue);
                 }
                 // 粉丝 取消关注
                 else if (WxMessageUtil.WxPushEventType.UNSUBSCRIBE.getName().equalsIgnoreCase(event)) {
@@ -111,7 +128,7 @@ public class WxController {
     @RequestMapping(value = "test.do")
     @ResponseBody
     public Object test(HttpServletRequest request, HttpServletResponse response){
-        weixinService.getAccessToken();
+       // weixinService.getAccessToken();
         return  new ResponseForm();
     }
 

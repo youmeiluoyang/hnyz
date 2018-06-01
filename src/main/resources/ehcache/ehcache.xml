@@ -16,14 +16,7 @@
             maxEntriesLocalDisk="1000000"
             memoryStoreEvictionPolicy="LFU"/>
 
-    <!--公共缓存-->
-    <cache name="commonCache"
-           maxEntriesLocalHeap="10000"
-           eternal="false"
-           timeToIdleSeconds="600"
-           timeToLiveSeconds="600"
-           overflowToDisk="false"
-           memoryStoreEvictionPolicy="LFU" />
+
 
 
     <!--accessToken缓存-->
@@ -33,6 +26,17 @@
            timeToIdleSeconds="1800"
            timeToLiveSeconds="1800"
            overflowToDisk="false"
+           memoryStoreEvictionPolicy="LFU" />
+
+
+    <!--一般性的缓存-->
+    <cache name="commonCache"
+           maxEntriesLocalHeap="100000"
+           eternal="false"
+           timeToIdleSeconds="1800"
+           timeToLiveSeconds="1800"
+           overflowToDisk="true"
+           maxEntriesLocalDisk="1000000"
            memoryStoreEvictionPolicy="LFU" />
 
 </ehcache>

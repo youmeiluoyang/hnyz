@@ -13,6 +13,10 @@ public class ResourceConfig {
 
     private  static final Properties wxApiConfig = new Properties();
     private  static final Properties appConfig = new Properties();
+    public static final String appSecrect;
+    public static final String appId;
+    public static final String mchId;
+    public static final String key;
 
     static {
         InputStream inputStream = ResourceConfig.class.getResourceAsStream(SysConfig.getEnvpath() + "/wxApi.properties");
@@ -31,6 +35,10 @@ public class ResourceConfig {
                 e.printStackTrace();
             }
         }
+        appSecrect = appConfig.getProperty("app.secret");
+        appId = appConfig.getProperty("app.appId");
+        key= appConfig.getProperty("app.key");
+        mchId= appConfig.getProperty("app.mchId");
     }
 
     public static Properties getWxApiConfig(){
