@@ -14,7 +14,7 @@
 
           <form id="searchForm" onsubmit="return false;">
               <input type="hidden" name="pageNum" id="pageNum" value="1"/>
-              <input type="hidden" name="lotteryId" id="lotteryId" value="1"/>
+              <input type="hidden" name="lotteryId" id="lotteryId" value="2"/>
               <div class="download fr">
                   <button class="btn btn-success" id="export">导出Excel</button>
               </div>

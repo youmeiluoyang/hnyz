@@ -85,10 +85,11 @@ public class WxController {
                     //article.setDescription("幸运大奖等着你哦")
                     //article.setTitle("快来参加有奖问卷调查啦");
                     //article.setUrl("http://ymly888.cn/res/front/html/question.html");
-                    article.setUrl("https://m.ule.com/item/detail/3517637.html?adid=uleapp_fx_merchant");
-                    article.setPicurl("http://ymly888.cn/res/front/img/welcome.jpg");
-                    article.setDescription("拍购麻辣快手系列产品满41元，赠送价值40元即饮型维维豆奶一箱。");
-                    article.setTitle("洛阳邮政携手维维集团感恩回馈客户");
+                    //article.setUrl("https://m.ule.com/item/detail/3517637.html?adid=uleapp_fx_merchant");
+                    article.setUrl("http://ymly888.cn/res/front/html/lotterySin.html");
+                    article.setPicurl("http://ymly888.cn/res/front/img/welcome1.jpg");
+                    article.setDescription("点我吧！点我吧！红包等你拿！！");
+                    article.setTitle(" ");
                     list.add(article);
                     SubscribeQueue subscribeQueue = new SubscribeQueue(openId,list);
                     QueueHandler.addQuequeableObject(subscribeQueue);

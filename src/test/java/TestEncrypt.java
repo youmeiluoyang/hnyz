@@ -1,11 +1,10 @@
-import com.alibaba.fastjson.JSONObject;
-import com.dg11185.hnyz.bean.common.wx.Article;
-import com.dg11185.hnyz.bean.common.wx.NewsMessage;
 import com.dg11185.hnyz.bean.common.wx.RedPack;
 import com.dg11185.hnyz.util.EncryptUtil;
 import com.dg11185.hnyz.util.wx.WxMessageUtil;
 import com.dg11185.util.network.CertLoader;
 import org.junit.Test;
+
+import java.util.Random;
 
 /**
  * @author xiesp
@@ -24,20 +23,12 @@ public class TestEncrypt {
 
     @Test
     public void testRnd(){
-        NewsMessage newsMessage = new NewsMessage();
-        newsMessage.setTouser("1111111111");
-        Article article = new Article();
-        article.setDescription("dsec1");
-        article.setTitle("title1");
+        Random random = new Random();
+        for(int i = 0;i<20;i++){
+            int num = random.nextInt(1000);
+            System.out.println(num);
+        }
 
-        Article article2 = new Article();
-        article2.setDescription("dsec2");
-        article2.setTitle("title2");
-
-        newsMessage.addArtcle(article);
-        newsMessage.addArtcle(article2);
-
-        System.out.println(JSONObject.toJSONString(newsMessage));
 
     }
 
