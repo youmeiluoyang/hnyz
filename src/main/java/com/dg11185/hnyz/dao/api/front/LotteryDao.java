@@ -31,15 +31,15 @@ public class LotteryDao extends BaseDAO{
 
 
     public List<LotteryItem> getLotteryItems(String lotteryId){
-        String sql = "select * from tb_lotteryItem where lotteryId = ?";
+        String sql = "select * from tb_lotteryItem where lotteryId = ? order by ids asc";
         List<LotteryItem> lotteryItems= this.queryForList(sql,new Object[]{lotteryId},LotteryItem.class);
         return lotteryItems;
     }
 
 
     public int getLotteryCntByOpenId(String openId,String lotteryId){
-        String sql = "select count(*) from tb_reward where openId = ?";
-        int cnt = this.getJb().queryForObject(sql,Integer.class,openId);
+        String sql = "select count(*) from tb_reward where openId = ? and  lotteryId = ?";
+        int cnt = this.getJb().queryForObject(sql,Integer.class,openId,lotteryId);
         return cnt;
     }
 

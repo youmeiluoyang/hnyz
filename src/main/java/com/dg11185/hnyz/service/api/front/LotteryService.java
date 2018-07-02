@@ -89,7 +89,7 @@ public interface LotteryService {
     /**
      * 获取一些中奖纪录展示
      */
-    List<Reward> getHitRewards();
+    List<Reward> getHitRewards(String lotteryId);
 
 
     /**

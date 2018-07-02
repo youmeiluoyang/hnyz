@@ -14,6 +14,7 @@ import com.dg11185.hnyz.common.constant.SysConstant;
 import com.dg11185.hnyz.service.api.front.LotteryService;
 import com.dg11185.hnyz.service.api.front.QuestionService;
 import com.dg11185.hnyz.util.LogUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,9 +95,11 @@ public class FrontApiController {
      */
     @RequestMapping(value = "/getLottery.do",method = RequestMethod.POST)
     @ResponseBody
-    public APIResponse getLottery(@RequestParam String lotteryId,HttpSession session) {
+    public APIResponse getLottery(@RequestParam String lotteryId,String type,HttpSession session) {
         APIResponse rsp = new APIResponse(APIResponse.SUCCESS);
-
+        if(StringUtils.isEmpty(type)){
+            type = "1";
+        }
         try{
 
             Fans fans = (Fans) session.getAttribute(SysConstant.WX_FRONT_USER);
@@ -105,7 +108,7 @@ public class FrontApiController {
             int cnt = lotteryService.getLotteryCntByOpenId(fans,lotteryId);
             //看是否做过问卷
             boolean answered = questionService.alreaytAnswer(fans);
-            int shareCnt = questionService.getShareCnt(fans.getOpenid(),"1");
+            int shareCnt = questionService.getShareCnt(fans.getOpenid(),type);
             rsp.initedData().put("shareCnt", shareCnt);
             rsp.initedData().put("lottery",lottery);
             rsp.initedData().put("items",lotteryItems);
@@ -183,11 +186,14 @@ public class FrontApiController {
      */
     @RequestMapping(value = "/addShareRec.do",method = RequestMethod.POST)
     @ResponseBody
-    public APIResponse addShareRec(HttpSession session) {
+    public APIResponse addShareRec(HttpSession session,String type) {
+        if(StringUtils.isEmpty(type)){
+            type = "1";
+        }
         APIResponse rsp = new APIResponse(APIResponse.SUCCESS);
         try{
             Fans fans = (Fans) session.getAttribute(SysConstant.WX_FRONT_USER);
-            questionService.addShareRec(fans.getOpenid(),"1");
+            questionService.addShareRec(fans.getOpenid(),type);
         }catch (Exception e){
             rsp.setStatus(APIResponse.INNER_ERROR);
             log.error("【前端控制器】:获取奖品发生错误:" + LogUtil.getTrace(e));
@@ -200,10 +206,13 @@ public class FrontApiController {
      */
     @RequestMapping(value = "/getHitRecs.do",method = RequestMethod.POST)
     @ResponseBody
-    public APIResponse getHitRecs() {
+    public APIResponse getHitRecs(String lotteryId) {
+        if(StringUtils.isEmpty(lotteryId)){
+            lotteryId = "1";
+        }
         APIResponse rsp = new APIResponse(APIResponse.SUCCESS);
         try{
-            List<Reward> list = this.lotteryService.getHitRewards();
+            List<Reward> list = this.lotteryService.getHitRewards(lotteryId);
             rsp.initedData().put("hits",list);
         }catch (Exception e){
             rsp.setStatus(APIResponse.INNER_ERROR);

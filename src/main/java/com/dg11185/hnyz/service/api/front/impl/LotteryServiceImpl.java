@@ -16,6 +16,7 @@ import com.dg11185.hnyz.common.queue.SendTemplateQueue;
 import com.dg11185.hnyz.dao.api.front.LotteryDao;
 import com.dg11185.hnyz.service.api.front.LotteryService;
 import com.dg11185.hnyz.util.LogUtil;
+import com.dg11185.hnyz.util.ServiceFacade;
 import com.dg11185.hnyz.util.wx.WxMessageUtil;
 import com.dg11185.util.common.DateUtil;
 import com.dg11185.util.queue.QueueHandler;
@@ -72,37 +73,52 @@ public class LotteryServiceImpl implements LotteryService{
     @Override
     public LotteryItem doLottery(String ids, Fans fans) {
         List<LotteryItem> lotteryItems = itemsMap.get(ids);
+        Lottery lottery = ServiceFacade.getBean(LotteryService.class).getLottery(ids);
+        int cntLimit = Integer.parseInt(lottery.getChanceCnt());
+        //判断抽奖有没有超过限制
+        int loyCnt = this.getLotteryCntByOpenId(fans,ids);
+        //超过次数的全部不给抽奖
+        if(loyCnt > cntLimit){
+            this.addLotteryRecord(ids,null,fans);
+            return null;
+        }
         Random random = new Random();
         int start = 0;
         int end = 0;
         LotteryItem hit = null;
         int num = random.nextInt(1000);
-        for(LotteryItem lotteryItem:lotteryItems){
-            int chance = lotteryItem.getChance();
-            end +=chance;
-            //这里其实已经中了奖了.但是还要判断数目是否正确.如果已经没有这个奖品了
-            //相当于没中奖
-            if(start<= num && num<end){
-                //性能暂时不考虑,虽然在循环里面,最多只会进行同步代码一次
-                //注意,只有中奖相同的用户才需要同步
-                synchronized (lotteryItem){
-                    int remain = lotteryItem.getHitLimit()  - lotteryItem.getAlreadyHitCnt();
-                    if(remain>0){
-                        hit = lotteryItem;
-                        lotteryItem.setAlreadyHitCnt(lotteryItem.getAlreadyHitCnt() + 1);
-                        break;
+        try{
+            for(LotteryItem lotteryItem:lotteryItems){
+                int chance = lotteryItem.getChance();
+                end +=chance;
+                log.info("start:" + start + "    num :" + num +"     end:" + end);
+                //这里其实已经中了奖了.但是还要判断数目是否正确.如果已经没有这个奖品了
+                //相当于没中奖
+                if(start<= num && num<end){
+                    //性能暂时不考虑,虽然在循环里面,最多只会进行同步代码一次
+                    //注意,只有中奖相同的用户才需要同步
+                    synchronized (lotteryItem){
+                        int remain = lotteryItem.getHitLimit()  - lotteryItem.getAlreadyHitCnt();
+                        if(remain>0){
+                            hit = lotteryItem;
+                            lotteryItem.setAlreadyHitCnt(lotteryItem.getAlreadyHitCnt() + 1);
+                            break;
+                        }
+                        //相当于没中奖,直接返回
+                        else{
+                            break;
+                        }
                     }
-                    //相当于没中奖,直接返回
-                    else{
-                        break;
-                    }
-                }
 
-            }else{
-                start+=chance;
+                }else{
+                    start+=chance;
+                }
             }
+            this.addLotteryRecord(ids,hit,fans);
+        }catch (Exception e){
+            log.error("抽奖过程发现错误:" + LogUtil.getTrace(e));
+            return null;
         }
-        this.addLotteryRecord(ids,hit,fans);
         return hit;
     }
 
@@ -137,19 +153,22 @@ public class LotteryServiceImpl implements LotteryService{
         String billNo = "";
         String state ="0";
         String attach = "";
+        String amount = "";
+        boolean sendRedPack = false;
+        boolean sendTem = false;
         //更新奖品的已中奖数量
         if(hitItem!=null){
             String itemSql = "update tb_lotteryItem set alreadyHitCnt= alreadyHitCnt+1 where ids = ?";
             this.lotteryDao.getJdbcTemplate().update(itemSql,hitItem.getIds());
             //如果是红包,直接发送红包
             if("1".equals(hitItem.getType())){
+                sendRedPack = true;
                 billNo = this.lotteryDao.getNextSqlValue("mch_billno")+"";
-                String amount = hitItem.getAmount();
-                this.sendRedPack(fans,amount,billNo);
+                amount = hitItem.getAmount();
                 state = "1";
             }else{
                 //发送模板消息
-                this.sendHitMessage(fans.getOpenid(),hitItem.getNames());
+                sendTem = true;
             }
             //优惠券
             if("3".equals(hitItem.getType())){
@@ -166,6 +185,13 @@ public class LotteryServiceImpl implements LotteryService{
                 "values(?,?,?,?,?,?,?,?,?,?)";
         this.lotteryDao.saveOrUpdate(rewardSql,fans.getOpenid(),hitItem==null?null:hitItem.getIds(),new Date(),
                 hitItem==null?0:1,lotteryId,fans.getHeadimgurl(),fans.getNickname(),state,billNo,attach);
+        //红包放到最后面方法,不然插入有问题的话就会造成不一致
+        if(sendRedPack){
+            this.sendRedPack(fans,amount,billNo);
+        }
+        if(sendTem){
+            this.sendHitMessage(fans.getOpenid(),hitItem.getNames());
+        }
     }
 
 
@@ -205,8 +231,8 @@ public class LotteryServiceImpl implements LotteryService{
         redPack.setTotal_num("1");
         redPack.setSend_name("邮美洛阳");
         redPack.setRe_openid(fans.getOpenid());
-        redPack.setWishing("感谢您参与问卷调查,红包请收好!");
-        redPack.setAct_name("有奖问卷调查");
+        redPack.setWishing("邮美洛阳祝您大吉大利,红包请收好!");
+        redPack.setAct_name("幸运大抽奖");
         redPack.setRemark("运气不错哦,中奖啦");
         SendRedpackQueue sendRedpackQueue = new SendRedpackQueue(redPack);
         QueueHandler.addQuequeableObject(sendRedpackQueue);
@@ -242,10 +268,10 @@ public class LotteryServiceImpl implements LotteryService{
 
 
     @Override
-    @Cacheable(value = "commonCache",key="methodName")
-    public List<Reward> getHitRewards() {
+    @Cacheable(value = "commonCache",key="#lotteryId+methodName")
+    public List<Reward> getHitRewards(String lotteryId) {
         String sql = "select a.names rewardNames,b.* from tb_lotteryItem a right JOIN(select openId,nickName,imgUrl,itemId from tb_reward where hasHit = 1 group by openId,nickName,imgUrl,itemId) b\n" +
-                " on a.ids = b.itemId limit 10";
+                " on a.ids = b.itemId where a.lotteryId = " + lotteryId  + " limit 10";
         List<Reward> list = this.lotteryDao.queryForList(sql,Reward.class);
         return list;
     }
